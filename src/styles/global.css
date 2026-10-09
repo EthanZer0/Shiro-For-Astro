@@ -1,0 +1,110 @@
+/* Original Shiro tokens, Tailwind/DaisyUI themes and typography are retained. */
+/* Bundle the library's base styles so Astro head swaps cannot remove them. */
+@import 'medium-zoom/dist/style.css';
+@import '../../node_modules/vaul/style.css';
+@import './upstream/tailwindcss.css';
+@import './upstream/variables.css';
+@import './upstream/theme.css';
+@import './upstream/scrollbar.css';
+@import './upstream/mask.css';
+@import './upstream/print.css';
+@import './upstream/webfont.css';
+@import './upstream/markdown.css';
+@import './upstream/markdown-variants.css';
+@import './upstream/Shiki.css';
+@import './upstream/Gallery.css';
+@import './upstream/ZoomedImage.css';
+@import './upstream/LinkCard.css';
+@import './upstream/markdown-renderers.css';
+
+/* Static adapter styles: replace React renderer wrappers and removed providers. */
+@theme inline { --color-neutral-8: var(--reference-neutral-text); }
+:root { --app-font-sans: 'Manrope'; --app-font-serif: 'Noto Serif SC'; --reference-neutral-text: #52525b; }
+html[data-theme='light'] { --color-root-bg: #fefefb; }
+html[data-theme='dark'] { --reference-neutral-text: #d4d4d8; }
+body { margin: 0; }
+.seasonal-background[hidden] { display: none; }
+@media (max-width: 1024px), (prefers-reduced-motion: reduce) { .seasonal-background { display: none; } }
+@media print { .seasonal-background { display: none; } }
+button, summary, a { touch-action: manipulation; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; }
+/* Zoom clones must not replay the original image's loading reveal. */
+.medium-zoom-image--opened.zoomed-image--loaded { animation: none; }
+/* Keep the source in place until the zoom clone is ready for its first paint. */
+body[data-zoom-preparing] .medium-zoom-overlay { opacity: 0; }
+body[data-zoom-preparing] .medium-zoom-image--hidden { visibility: visible; }
+body[data-zoom-preparing] .medium-zoom-image--opened { visibility: hidden; }
+.header-grid { grid-template-areas: 'left center right'; }
+@media (min-width: 1024px) {
+  /* Match the body's scrollbar compensation while a modal locks scrolling. */
+  .site-header { right: var(--removed-body-scroll-bar-size, 0px); }
+  .header-grid { width: 100%; }
+}
+.header-logo { grid-area: center; }
+.mobile-menu { grid-area: left; }
+.skip-link { position: fixed; z-index: 50; top: -100px; left: 1rem; padding: .75rem; background: var(--color-root-bg); }
+.skip-link:focus { top: 1rem; }
+.post-item { cursor: pointer; transition: transform .2s cubic-bezier(.33,1,.68,1); }
+.post-item::before { content: ''; position: absolute; inset: 0 -1.5rem; z-index: -1; border-radius: 12px; background: rgb(0 0 0 / .03); opacity: 0; transform: scale(.92); transform-origin: var(--origin-x,50%) var(--origin-y,50%); backdrop-filter: blur(8px); transition: opacity .2s, transform .2s; }
+[data-theme='dark'] .post-item::before { background: rgb(255 255 255 / .1); }
+.post-item:hover::before, .post-item:focus-visible::before { opacity: 1; transform: scale(1); }
+.reading-layout { display: grid; grid-template-columns: minmax(0, 1fr); }
+.reading-layout--note { min-width: 0; }
+.reading-aside { display: none; }
+[data-back-to-top]:hover { opacity: 1 !important; }
+.prose.markdown pre { position: relative; background: transparent !important; overflow-x: auto; }
+[data-theme='dark'] .astro-code, [data-theme='dark'] .astro-code span { color: var(--shiki-dark) !important; font-style: var(--shiki-dark-font-style) !important; font-weight: var(--shiki-dark-font-weight) !important; text-decoration: var(--shiki-dark-text-decoration) !important; }
+.code-copy { position: absolute; top: .5rem; right: .5rem; z-index: 3; padding: .375rem; border-radius: .375rem; border: 1px solid color-mix(in srgb, var(--color-accent) 5%, transparent); font: 12px var(--font-sans); background: color-mix(in srgb, var(--color-accent) 80%, transparent); color: white; opacity: 0; transition: opacity .2s; }
+.shiki-code-card:hover .code-copy, .code-copy:focus-visible { opacity: 1; }
+.year-chart { overflow-x: auto; }
+.year-entry::before { content: ''; position: absolute; inset: -4px; }
+.search-panel { --pagefind-ui-primary: var(--color-accent); --pagefind-ui-text: var(--color-base-content); --pagefind-ui-background: var(--color-root-bg); --pagefind-ui-border: var(--color-border); --pagefind-ui-font: var(--font-sans); }
+@media (min-width: 1024px) {
+  .header-logo { grid-area: left; }
+  .reading-layout { grid-template-columns: minmax(0,1fr) 200px; }
+  .reading-layout--note { grid-template-columns: minmax(0,1fr); }
+  .reading-aside { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+@media print {
+  .site-header, footer, .reading-aside, .toc-fab, .article-navigation, .code-copy, .skip-link { display: none !important; }
+  .reading-layout { display: block; }
+  html { background: white; color: black; }
+}
+
+[hidden] { display:none!important; }
+.shiro-masonry { columns:1; }
+@media(min-width:750px){.shiro-masonry{columns:2}}
+.shiro-masonry > * { break-inside:avoid; }
+
+/* Search-specific presentation; viewport variables follow the mobile keyboard. */
+.site-search-backdrop { background: rgb(24 24 27 / .24); backdrop-filter: blur(4px); }
+.site-search-panel {
+  --search-top-gap: max(24px, env(safe-area-inset-top));
+  --search-bottom-gap: max(24px, env(safe-area-inset-bottom));
+  position: fixed;
+  left: 50%;
+  top: calc(var(--search-viewport-top, 0px) + var(--search-top-gap) + (var(--search-viewport-height, 100dvh) - var(--search-top-gap) - var(--search-bottom-gap)) / 2);
+  translate: -50% -50%;
+  width: calc(100vw - 24px);
+  max-width: 720px;
+  height: min(560px, calc(var(--search-viewport-height, 100dvh) - var(--search-top-gap) - var(--search-bottom-gap)));
+  border: 1px solid rgb(161 161 170 / .2);
+  border-radius: 20px;
+  background: rgb(250 250 250 / .72);
+  box-shadow: 0 24px 80px rgb(24 24 27 / .18);
+  backdrop-filter: blur(24px) saturate(130%);
+}
+html[data-theme='dark'] .site-search-backdrop { background: rgb(0 0 0 / .5); }
+html[data-theme='dark'] .site-search-panel {
+  border-color: rgb(113 113 122 / .3);
+  background: rgb(23 23 23 / .68);
+  box-shadow: 0 24px 80px rgb(0 0 0 / .4);
+}
+@media (min-width: 768px) {
+  .site-search-panel { --search-top-gap: 48px; --search-bottom-gap: 48px; width: calc(100vw - 64px); }
+}

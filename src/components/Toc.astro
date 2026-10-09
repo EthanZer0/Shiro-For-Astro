@@ -1,0 +1,14 @@
+---
+import type { MarkdownHeading } from 'astro';
+import TocTree from './TocTree';
+import ReadIndicator from './ReadIndicator';
+interface Props { headings: MarkdownHeading[]; }
+const { headings } = Astro.props;
+---
+<nav class="absolute z-[3] flex h-full min-h-[120px] flex-col font-sans" aria-label="文章目录" data-toc data-pagefind-ignore>
+  <TocTree headings={headings} client:load />
+  <div class="shrink-0">
+    {headings.length > 0 && <hr class="my-4 h-[0.5px] border-0 bg-black/30 dark:bg-white/30" />}
+    <ReadIndicator client:load />
+  </div>
+</nav>
